@@ -1,0 +1,13 @@
+the best solution found that these feature engineering could help our model:
+
+- boost by label encoding for categorical variables
+
+- created aggregates of the previous_application:
+we should try aggregates for last three and first two applications
+
+- transform region_id_population from numerical to categorical
+
+- create credit_annuity_ratio
+amt_credit / amt_annuity
+
+this should be a good start for feature engineering

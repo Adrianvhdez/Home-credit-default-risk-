@@ -1,0 +1,90 @@
+import all the data from kaggle into the original data folder and run the code steps one by one
+
+Target variable is called ‘Target’ and only exists in the Train dataset, therefore we delete the test database.
+
+
+we can see on missing_data_percolumn.py that most of the missing data occurs where the data is in the form of mode, median and average after normalization.
+This leads us to conclude we can delete these datacolumns as their usability is limited due to the low data availability.
+
+
+
+
+step1   
+we delete the data columns with delete_40+.py
+new file is saved in modified data folder
+results can be inspected through missing_data_percolumn_after40
+
+Step2
+Feature engineering (#CREDIT_ANNUITY_RATIO
+# LATE_PAYMENT_FEATURE
+# CREDIT_UTILIZATION
+# DEBT_RATIO
+# amount of credit / goods price)
+
+Step 3
+Merging all datasets.
+Given the ability of ML to handle big amount of data and missing values, we decided to include almost all the other available data from the other datasets (installments_payments
+redit_card_balance, bureau, previous_application). In cases where multiple numerical information existed for a single ID, the average was calculated, in case of categorical information the most used one (for the respective ID) was used. 
+
+step4
+we now run the XGBoost, LightGBM and Random Forest models
+we now perform gridsearch for the hyperparameters for the LGBM model. takes however significantly more time to run. The optimal parameters are:
+Best Parameters: {'learning_rate': 0.1, 'max_depth': 10, 'num_leaves': 31}
+
+
+
+
+
+
+
+
+
+
+step2  (was deleted as the models already deal with missing data) 
+after inspection of the new dataset, we remove rows with missing data for the following columns:
+columns_to_check = [
+    "NAME_TYPE_SUITE",
+    "DEF_30_CNT_SOCIAL_CIRCLE",
+    "OBS_30_CNT_SOCIAL_CIRCLE",
+    "OBS_60_CNT_SOCIAL_CIRCLE",
+    "DEF_60_CNT_SOCIAL_CIRCLE",
+    "EXT_SOURCE_2",
+    "AMT_GOODS_PRICE",
+    "AMT_ANNUITY",
+    "CNT_FAM_MEMBERS",
+    "DAYS_LAST_PHONE_CHANGE"
+]
+because they have at maximum 1291 missing datapoints, the deletion of these rows would not impact our results heavily
+
+
+step3   (Was deleted as this step decreased the accuracy and AOC)
+now, we only have three types of missing value columns left:
+- Occupation_type (31%)
+What kind of occupation does the client have
+
+- EXT_Source_3 (19.8%)
+Normalized score from external data source
+
+- AMT_REQ_CREDIT_BUREAU yearly,qrterly,hourly etc. (13.5%)
+Number of enquiries to Credit Bureau about the client
+
+We think that AMT_REQ feature is not as important as other features in our database because it only give information on enquiry volume
+and the deletion of these columns would not impact our results significantly, we therefore remove the columns on AMT_REQ data and save the new data as missing_removed_final.csv
+
+
+Now, we only have two columns with missing data which upon removal would both have big impacts on our results, and we therefore do not delete the columns or remove the rows
+
+tree based models XGBoost and lightGBM can handle missing values internally, so we could technically leave these missing values open as these are the models we want to employ
+this is because the tree based models can make use of missingness as part of their decision making process
+
+
+
+using instances_perclass.py shows that the class distribution has not changed much resulting from our data modification.
+when we run our models, there is still a big class imbalance present, we should adress this imbalance somewhere in our modelling to see if this could improve our results
+
+
+step6 (was ignored due to issues when running the code)
+we now run the model with balanced dataset by synthetically oversampling the minority class using SMOTE library in the Scikitlearn library
+THIS IS WHERE I AM NOW, work from here
+feature engineering as described in the other textfile
+
